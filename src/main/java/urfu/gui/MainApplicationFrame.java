@@ -1,6 +1,6 @@
 package urfu.gui;
 
-import log.Logger;
+import urfu.log.Logger;
 
 import javax.swing.*;
 import java.awt.*;
