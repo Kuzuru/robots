@@ -1,8 +1,8 @@
 package urfu.gui;
 
-import log.LogChangeListener;
-import log.LogEntry;
-import log.LogWindowSource;
+import urfu.log.LogChangeListener;
+import urfu.log.LogEntry;
+import urfu.log.LogWindowSource;
 
 import javax.swing.*;
 import java.awt.*;
