@@ -10,14 +10,19 @@ import java.util.TimerTask;
 
 public class GameVisualizer extends JPanel
 {
+    private final Timer m_timer = initTimer();
+
     private static final double maxVelocity = 0.1;
     private static final double maxAngularVelocity = 0.001;
-    private final Timer m_timer = initTimer();
+
     private volatile double m_robotPositionX = 100;
     private volatile double m_robotPositionY = 100;
+
     private volatile double m_robotDirection = 0;
+
     private volatile int m_targetPositionX = 150;
     private volatile int m_targetPositionY = 100;
+
     public GameVisualizer()
     {
         m_timer.schedule(new TimerTask()
@@ -36,6 +41,7 @@ public class GameVisualizer extends JPanel
                 onModelUpdateEvent();
             }
         }, 0, 10);
+
         addMouseListener(new MouseAdapter()
         {
             @Override
@@ -45,12 +51,14 @@ public class GameVisualizer extends JPanel
                 repaint();
             }
         });
+
         setDoubleBuffered(true);
     }
 
     private static Timer initTimer()
     {
         Timer timer = new Timer("events generator", true);
+
         return timer;
     }
 
@@ -58,6 +66,8 @@ public class GameVisualizer extends JPanel
     {
         double diffX = x1 - x2;
         double diffY = y1 - y2;
+
+        // TODO: Не считать по Эйлеру!!! Считать по модулю!
         return Math.sqrt(diffX * diffX + diffY * diffY);
     }
 
@@ -73,9 +83,8 @@ public class GameVisualizer extends JPanel
     {
         if (value < min)
             return min;
-        if (value > max)
-            return max;
-        return value;
+
+        return Math.min(value, max);
     }
 
     private static double asNormalizedRadians(double angle)
@@ -83,9 +92,11 @@ public class GameVisualizer extends JPanel
         while (angle < 0) {
             angle += 2 * Math.PI;
         }
+
         while (angle >= 2 * Math.PI) {
             angle -= 2 * Math.PI;
         }
+
         return angle;
     }
 
@@ -172,7 +183,9 @@ public class GameVisualizer extends JPanel
     public void paint(Graphics g)
     {
         super.paint(g);
+
         Graphics2D g2d = (Graphics2D) g;
+
         drawRobot(g2d, round(m_robotPositionX), round(m_robotPositionY), m_robotDirection);
         drawTarget(g2d, m_targetPositionX, m_targetPositionY);
     }
@@ -181,14 +194,19 @@ public class GameVisualizer extends JPanel
     {
         int robotCenterX = round(m_robotPositionX);
         int robotCenterY = round(m_robotPositionY);
+
         AffineTransform t = AffineTransform.getRotateInstance(direction, robotCenterX, robotCenterY);
         g.setTransform(t);
+
         g.setColor(Color.MAGENTA);
         fillOval(g, robotCenterX, robotCenterY, 30, 10);
+
         g.setColor(Color.BLACK);
         drawOval(g, robotCenterX, robotCenterY, 30, 10);
+
         g.setColor(Color.WHITE);
         fillOval(g, robotCenterX + 10, robotCenterY, 5, 5);
+
         g.setColor(Color.BLACK);
         drawOval(g, robotCenterX + 10, robotCenterY, 5, 5);
     }
@@ -197,8 +215,10 @@ public class GameVisualizer extends JPanel
     {
         AffineTransform t = AffineTransform.getRotateInstance(0, 0, 0);
         g.setTransform(t);
+
         g.setColor(Color.GREEN);
         fillOval(g, x, y, 5, 5);
+
         g.setColor(Color.BLACK);
         drawOval(g, x, y, 5, 5);
     }
