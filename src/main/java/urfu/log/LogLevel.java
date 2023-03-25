@@ -1,7 +1,7 @@
 package urfu.log;
 
 /**
- * LogLevel enumeration represents the severity levels of log messages.
+ * LogLevel enumeration represents the severity levels of log messages
  */
 public enum LogLevel
 {
@@ -15,7 +15,7 @@ public enum LogLevel
     private final int m_iLevel;
 
     /**
-     * Constructor for LogLevel with an integer level.
+     * Constructor for LogLevel with an integer level
      *
      * @param iLevel the integer value of the log level
      */
@@ -25,7 +25,7 @@ public enum LogLevel
     }
 
     /**
-     * Get the integer value of the log level.
+     * Get the integer value of the log level
      *
      * @return the integer value of the log level
      */
@@ -35,7 +35,7 @@ public enum LogLevel
     }
 
     /**
-     * Get the LogLevel enumeration member corresponding to the given integer value.
+     * Get the LogLevel enumeration member corresponding to the given integer value
      *
      * @param iLevel the integer value of the log level
      *
