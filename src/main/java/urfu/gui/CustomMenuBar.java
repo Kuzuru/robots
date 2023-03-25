@@ -13,36 +13,39 @@ public class CustomMenuBar extends JMenuBar
         add(createTestMenu());
     }
 
+    private enum LookAndFeelType
+    {
+        SYSTEM("Системная схема", UIManager.getSystemLookAndFeelClassName()),
+        CROSS_PLATFORM("Универсальная схема", UIManager.getCrossPlatformLookAndFeelClassName());
+
+        private final String displayName;
+        private final String className;
+
+        LookAndFeelType(String displayName, String className)
+        {
+            this.displayName = displayName;
+            this.className = className;
+        }
+    }
+
     private JMenu createLookAndFeelMenu()
     {
         JMenu lookAndFeelMenu = new JMenu("Режим отображения");
         lookAndFeelMenu.setMnemonic(KeyEvent.VK_V);
         lookAndFeelMenu.getAccessibleContext().setAccessibleDescription("Управление режимом отображения приложения");
 
-        lookAndFeelMenu.add(createSystemLookAndFeelItem());
-        lookAndFeelMenu.add(createCrossplatformLookAndFeelItem());
+        for (LookAndFeelType type : LookAndFeelType.values()) {
+            lookAndFeelMenu.add(createLookAndFeelItem(type));
+        }
 
         return lookAndFeelMenu;
     }
 
-    private JMenuItem createSystemLookAndFeelItem()
+    private JMenuItem createLookAndFeelItem(LookAndFeelType type)
     {
-        JMenuItem systemLookAndFeel = new JMenuItem("Системная схема", KeyEvent.VK_S);
-        systemLookAndFeel.addActionListener((event) ->
-        {
-            setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        });
-        return systemLookAndFeel;
-    }
-
-    private JMenuItem createCrossplatformLookAndFeelItem()
-    {
-        JMenuItem crossplatformLookAndFeel = new JMenuItem("Универсальная схема", KeyEvent.VK_S);
-        crossplatformLookAndFeel.addActionListener((event) ->
-        {
-            setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-        });
-        return crossplatformLookAndFeel;
+        JMenuItem lookAndFeelItem = new JMenuItem(type.displayName, KeyEvent.VK_S);
+        lookAndFeelItem.addActionListener((event) -> setLookAndFeel(type.className));
+        return lookAndFeelItem;
     }
 
     private JMenu createTestMenu()
@@ -59,10 +62,7 @@ public class CustomMenuBar extends JMenuBar
     private JMenuItem createAddLogMessageItem()
     {
         JMenuItem addLogMessageItem = new JMenuItem("Сообщение в лог", KeyEvent.VK_S);
-        addLogMessageItem.addActionListener((event) ->
-        {
-            Logger.debug("Новая строка");
-        });
+        addLogMessageItem.addActionListener((event) -> Logger.debug("Новая строка"));
         return addLogMessageItem;
     }
 

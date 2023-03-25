@@ -1,60 +1,70 @@
 package urfu.log;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
-/**
- * Что починить:
- * 1. Этот класс порождает утечку ресурсов (связанные слушатели оказываются
- * удерживаемыми в памяти)
- * 2. Этот класс хранит активные сообщения лога, но в такой реализации он
- * их лишь накапливает. Надо же, чтобы количество сообщений в логе было ограничено
- * величиной m_iQueueLength (т.е. реально нужна очередь сообщений
- * ограниченного размера)
- */
+// 1. Использовал WeakReference для слушателей, чтобы предотвратить утечку ресурсов
+// 2. Реализовал круговой буфер для хранения сообщений журнала с ограниченным размером, основанным на m_iQueueLength
 public class LogWindowSource
 {
-    private final ArrayList<LogChangeListener> m_listeners;
+    private final List<WeakReference<LogChangeListener>> m_listeners;
     private final int m_iQueueLength;
-    private final ArrayList<LogEntry> m_messages;
-    private volatile LogChangeListener[] m_activeListeners;
+    private final LogEntry[] m_messages;
+    private int m_startIndex;
+    private int m_endIndex;
+    private boolean m_isFull;
 
     public LogWindowSource(int iQueueLength)
     {
         m_iQueueLength = iQueueLength;
-        m_messages = new ArrayList<LogEntry>(iQueueLength);
-        m_listeners = new ArrayList<LogChangeListener>();
+        m_messages = new LogEntry[iQueueLength];
+        m_listeners = new ArrayList<>();
+        m_startIndex = 0;
+        m_endIndex = 0;
+        m_isFull = false;
     }
 
     public void registerListener(LogChangeListener listener)
     {
         synchronized (m_listeners) {
-            m_listeners.add(listener);
-            m_activeListeners = null;
+            m_listeners.add(new WeakReference<>(listener));
         }
     }
 
     public void unregisterListener(LogChangeListener listener)
     {
         synchronized (m_listeners) {
-            m_listeners.remove(listener);
-            m_activeListeners = null;
+            m_listeners.removeIf(ref -> listener == ref.get());
         }
     }
 
     public void append(LogLevel logLevel, String strMessage)
     {
         LogEntry entry = new LogEntry(logLevel, strMessage);
-        m_messages.add(entry);
-        LogChangeListener[] activeListeners = m_activeListeners;
-        if (activeListeners == null) {
-            synchronized (m_listeners) {
-                if (m_activeListeners == null) {
-                    activeListeners = m_listeners.toArray(new LogChangeListener[0]);
-                    m_activeListeners = activeListeners;
+        synchronized (m_messages) {
+            m_messages[m_endIndex] = entry;
+            m_endIndex = (m_endIndex + 1) % m_iQueueLength;
+
+            if (m_isFull) {
+                m_startIndex = (m_startIndex + 1) % m_iQueueLength;
+            } else if (m_endIndex == m_startIndex) {
+                m_isFull = true;
+            }
+        }
+
+        List<LogChangeListener> activeListeners = new LinkedList<>();
+        synchronized (m_listeners) {
+            for (WeakReference<LogChangeListener> ref : m_listeners) {
+                LogChangeListener listener = ref.get();
+                if (listener != null) {
+                    activeListeners.add(listener);
                 }
             }
         }
+
         for (LogChangeListener listener : activeListeners) {
             listener.onLogChanged();
         }
@@ -62,20 +72,30 @@ public class LogWindowSource
 
     public int size()
     {
-        return m_messages.size();
+        if (m_isFull) {
+            return m_iQueueLength;
+        } else {
+            return m_endIndex;
+        }
     }
 
     public Iterable<LogEntry> range(int startFrom, int count)
     {
-        if (startFrom < 0 || startFrom >= m_messages.size()) {
+        if (startFrom < 0 || startFrom >= size()) {
             return Collections.emptyList();
         }
-        int indexTo = Math.min(startFrom + count, m_messages.size());
-        return m_messages.subList(startFrom, indexTo);
+        int indexTo = Math.min(startFrom + count, size());
+        List<LogEntry> subList = new ArrayList<>(indexTo - startFrom);
+        synchronized (m_messages) {
+            for (int i = startFrom; i < indexTo; i++) {
+                subList.add(m_messages[(m_startIndex + i) % m_iQueueLength]);
+            }
+        }
+        return subList;
     }
 
     public Iterable<LogEntry> all()
     {
-        return m_messages;
+        return range(0, size());
     }
 }
