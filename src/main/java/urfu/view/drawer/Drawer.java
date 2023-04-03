@@ -1,4 +1,4 @@
-package urfu.model;
+package urfu.view.drawer;
 
 import java.awt.*;
 

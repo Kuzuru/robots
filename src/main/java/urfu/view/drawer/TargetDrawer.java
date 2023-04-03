@@ -1,4 +1,6 @@
-package urfu.model;
+package urfu.view.drawer;
+
+import urfu.model.Target;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;

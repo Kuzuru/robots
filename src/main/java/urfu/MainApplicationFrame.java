@@ -1,6 +1,6 @@
 package urfu;
 
-import urfu.gui.CustomMenuBar;
+import urfu.view.CustomMenuBar;
 import urfu.view.LogWindow;
 import urfu.log.Logger;
 import urfu.view.GameWindow;

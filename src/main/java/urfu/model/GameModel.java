@@ -2,7 +2,8 @@ package urfu.model;
 
 import java.awt.*;
 
-public class GameModel {
+public class GameModel
+{
     private final Robot robot;
     private final Target target;
 
@@ -13,20 +14,24 @@ public class GameModel {
         this.target = new Target();
     }
 
-    public void setTargetPosition(Point p) {
+    public void setTargetPosition(Point p)
+    {
         target.setX(p.x);
         target.setY(p.y);
     }
 
-    protected Point getTargetPosition() {
+    protected Point getTargetPosition()
+    {
         return new Point(target.getX(), target.getY());
     }
 
-    public void setDimension(Dimension dimension) {
+    public void setDimension(Dimension dimension)
+    {
         this.dimension = dimension;
     }
 
-    public Dimension getDimension() {
+    public Dimension getDimension()
+    {
         return this.dimension;
     }
 
@@ -59,21 +64,25 @@ public class GameModel {
         return angle;
     }
 
-    // ???????????
-    private double normalizedPositionX(double x) {
+    private double normalizedPositionX(double x)
+    {
         if (x < 0)
             return 0;
-        if (x > dimension.height)
-            return dimension.height;
+
+        if (x > dimension.width)
+            return dimension.width;
+
         return x;
     }
 
-    // ??????????????
-    private double normalizedPositionY(double y) {
+    private double normalizedPositionY(double y)
+    {
         if (y < 0)
             return 0;
-        if (y > dimension.width)
-            return dimension.width;
+
+        if (y > dimension.height)
+            return dimension.height;
+
         return y;
     }
 
@@ -106,44 +115,47 @@ public class GameModel {
             newY = robot.getPosY() + velocity * duration * Math.sin(robot.getRobotDirection());
         }
 
-        robot.setPosX(newX);
-        robot.setPosY(newY);
+        robot.setPosX(normalizedPositionX(newX));
+        robot.setPosY(normalizedPositionY(newY));
 
         double newDirection = asNormalizedRadians(robot.getRobotDirection() + angularVelocity * duration);
+
         robot.setRobotDirection(newDirection);
     }
 
-    protected void onModelUpdateEvent()
+    public void updateModel()
     {
-        double distance = distance(
-                target.getX(), target.getY(),
-                robot.getPosX(), robot.getPosY()
-        );
+        double distance = distance(target.getX(), target.getY(), robot.getPosX(), robot.getPosY());
 
-        if (distance < 0.5) {
+        if (distance < 4.0) { // Change the condition to a larger value to stop the robot when it's close enough to the target
             return;
         }
 
+        double velocity = Robot.maxVelocity;
         double angleToTarget = angleTo(robot.getPosX(), robot.getPosY(), target.getX(), target.getY());
-        double angularVelocity = 0;
+        double angularDifference = asNormalizedRadians(angleToTarget - robot.getRobotDirection());
 
-        if (angleToTarget > robot.getRobotDirection()) {
-            angularVelocity = Robot.maxAngularVelocity;
+        double angularVelocity;
+
+        if (angularDifference > Math.PI) {
+            angularDifference -= 2 * Math.PI;
+        } else if (angularDifference < -Math.PI) {
+            angularDifference += 2 * Math.PI;
         }
 
-        if (angleToTarget < robot.getRobotDirection()) {
-            angularVelocity = -Robot.maxAngularVelocity;
-        }
+        // Scale the angular velocity based on the angular difference
+        angularVelocity = Robot.maxAngularVelocity * (angularDifference / Math.PI);
 
-        moveRobot(Robot.maxVelocity, angularVelocity, 10);
+        moveRobot(velocity, angularVelocity, 50);
     }
 
-    public Robot getRobot() {
+    public Robot getRobot()
+    {
         return robot;
     }
 
-    public Target getTarget() {
+    public Target getTarget()
+    {
         return target;
     }
-
 }

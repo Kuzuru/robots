@@ -1,8 +1,8 @@
 package urfu.view;
 
 import urfu.model.GameModel;
-import urfu.model.RobotDrawer;
-import urfu.model.TargetDrawer;
+import urfu.view.drawer.RobotDrawer;
+import urfu.view.drawer.TargetDrawer;
 
 import javax.swing.*;
 import java.awt.*;
