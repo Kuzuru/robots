@@ -74,7 +74,7 @@ public class GameViewModel extends JPanel
                 super.componentResized(e);
 
                 System.out.println("resize");
-                game_model.setDimension((game_window.getSize()));
+                game_model.setDimension(game_window.getSize());
                 System.out.println(game_model.getDimension());
             }
         });

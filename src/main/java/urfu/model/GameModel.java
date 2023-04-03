@@ -69,7 +69,7 @@ public class GameModel
         if (x < 0)
             return 0;
 
-        if (x > dimension.width)
+        if (x < dimension.width)
             return dimension.width;
 
         return x;
@@ -80,7 +80,7 @@ public class GameModel
         if (y < 0)
             return 0;
 
-        if (y > dimension.height)
+        if (y < dimension.height)
             return dimension.height;
 
         return y;
@@ -115,8 +115,8 @@ public class GameModel
             newY = robot.getPosY() + velocity * duration * Math.sin(robot.getRobotDirection());
         }
 
-        robot.setPosX(normalizedPositionX(newX));
-        robot.setPosY(normalizedPositionY(newY));
+        robot.setPosX(newX);
+        robot.setPosY(newY);
 
         double newDirection = asNormalizedRadians(robot.getRobotDirection() + angularVelocity * duration);
 
