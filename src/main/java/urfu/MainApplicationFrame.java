@@ -1,6 +1,10 @@
-package urfu.gui;
+package urfu;
 
+import urfu.view.CustomMenuBar;
+import urfu.view.LogWindow;
 import urfu.log.Logger;
+import urfu.view.GameWindow;
+import urfu.viewmodel.GameViewModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,7 +13,7 @@ public class MainApplicationFrame extends JFrame
 {
     private final JDesktopPane desktopPane = new JDesktopPane();
 
-    public MainApplicationFrame()
+    public MainApplicationFrame(GameViewModel game_viewmodel)
     {
         // Make the big window be indented 50 pixel
         // from each edge of the screen
@@ -29,7 +33,7 @@ public class MainApplicationFrame extends JFrame
         LogWindow logWindow = createLogWindow();
         addWindow(logWindow);
 
-        GameWindow gameWindow = new GameWindow();
+        GameWindow gameWindow = new GameWindow(game_viewmodel.getGameView());
         gameWindow.setSize(600, 600);
         addWindow(gameWindow);
 

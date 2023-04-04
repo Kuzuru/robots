@@ -1,4 +1,4 @@
-package urfu.gui;
+package urfu.view;
 
 import urfu.log.LogChangeListener;
 import urfu.log.LogEntry;
