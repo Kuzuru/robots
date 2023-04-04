@@ -5,9 +5,9 @@
   <img src="https://img.shields.io/badge/version-0.7.3-blue" alt="version: 0.7.3">
  </p>
 
-## Описание
-Robots - <описание>
+## Description
+Robot is a simple Java application in which a robot moves towards a target on a 2D plane
 
-## Возможности
+## Features
 
-<возможности>
+<feats>
