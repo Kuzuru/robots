@@ -10,4 +10,6 @@ Robot is a simple Java application in which a robot moves towards a target on a 
 
 ## Features
 
-<feats>
+* With a simple click you can set the point to which the robot will move
+* You can display messages in the log
+* On the example of this project you can study the MVVM pattern
