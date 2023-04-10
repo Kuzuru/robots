@@ -1,17 +1,19 @@
 package urfu.model;
 
 import java.awt.*;
-
+import urfu.log.Logger;
 public class GameModel
 {
     private final Robot robot;
     private final Target target;
+    private final Food food;
 
     private Dimension dimension;
 
     public GameModel() {
         this.robot = new Robot();
         this.target = new Target();
+        this.food = new Food();
     }
 
     public void setTargetPosition(Point p)
@@ -127,8 +129,16 @@ public class GameModel
     {
         double distance = distance(target.getX(), target.getY(), robot.getPosX(), robot.getPosY());
 
+        double distanceToFood = distance(food.getX(), food.getY(), robot.getPosX(), robot.getPosY());
+
         if (distance < 4.0) { // Change the condition to a larger value to stop the robot when it's close enough to the target
             return;
+        }
+
+        if (distanceToFood < 10.0){
+            food.setPositionX();
+            food.setPositionY();
+            Logger.debug(String.valueOf(Food.count()));
         }
 
         double velocity = Robot.maxVelocity;
@@ -149,6 +159,8 @@ public class GameModel
         moveRobot(velocity, angularVelocity, 50);
     }
 
+
+
     public Robot getRobot()
     {
         return robot;
@@ -157,5 +169,9 @@ public class GameModel
     public Target getTarget()
     {
         return target;
+    }
+    public Food getFood()
+    {
+        return food;
     }
 }
