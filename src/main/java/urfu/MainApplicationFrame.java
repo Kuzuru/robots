@@ -50,7 +50,7 @@ public class MainApplicationFrame extends JFrame
         setMinimumSize(logWindow.getSize());
         logWindow.pack();
 
-        //Logger.debug("Протокол работает");
+        Logger.debug("Протокол работает");
         return logWindow;
     }
 

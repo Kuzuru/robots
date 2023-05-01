@@ -39,7 +39,6 @@ public class GameView extends JPanel
     public void paint(Graphics g)
     {
         super.paint(g);
-
         Graphics2D g2d = (Graphics2D) g;
 
         robotDrawer.drawRobot(g2d, gameModel.getRobot());

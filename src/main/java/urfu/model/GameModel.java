@@ -1,7 +1,7 @@
 package urfu.model;
 
 import java.awt.*;
-import urfu.log.Logger;
+
 public class GameModel
 {
     private final Robot robot;
@@ -35,14 +35,6 @@ public class GameModel
     public Dimension getDimension()
     {
         return this.dimension;
-    }
-
-    private static double distance(double x1, double y1, double x2, double y2)
-    {
-        double diffX = x1 - x2;
-        double diffY = y1 - y2;
-
-        return Math.sqrt(diffX * diffX + diffY * diffY);
     }
 
     private static double angleTo(double fromX, double fromY, double toX, double toY)
@@ -127,45 +119,30 @@ public class GameModel
 
     public void updateModel()
     {
-        double distance = distance(target.getX(), target.getY(), robot.getPosX(), robot.getPosY());
+        robot.updateDistances(target, food);
 
-        double distanceToFood = distance(food.getX(), food.getY(), robot.getPosX(), robot.getPosY());
+        robot.ifCloseEnoughToFood(food);
 
-        if (distance < 4.0) { // Change the condition to a larger value to stop the robot when it's close enough to the target
-            return;
-        }
-
-        if (distanceToFood < 10.0){
-            food.setPositionX();
-            food.setPositionY();
-            Logger.debug(String.valueOf(Food.count()));
-        }
+        if (robot.isCloseEnoughToTarget()) { return; }
 
         double velocity = Robot.maxVelocity;
         double angleToTarget = angleTo(robot.getPosX(), robot.getPosY(), target.getX(), target.getY());
         double angularDifference = asNormalizedRadians(angleToTarget - robot.getRobotDirection());
-
         double angularVelocity;
-
         if (angularDifference > Math.PI) {
             angularDifference -= 2 * Math.PI;
         } else if (angularDifference < -Math.PI) {
             angularDifference += 2 * Math.PI;
         }
-
         // Scale the angular velocity based on the angular difference
         angularVelocity = Robot.maxAngularVelocity * (angularDifference / Math.PI);
-
         moveRobot(velocity, angularVelocity, 50);
     }
-
-
 
     public Robot getRobot()
     {
         return robot;
     }
-
     public Target getTarget()
     {
         return target;
@@ -175,3 +152,5 @@ public class GameModel
         return food;
     }
 }
+
+
