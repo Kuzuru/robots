@@ -51,7 +51,6 @@ public class MainApplicationFrame extends JFrame
         logWindow.pack();
 
         Logger.debug("Протокол работает");
-
         return logWindow;
     }
 
