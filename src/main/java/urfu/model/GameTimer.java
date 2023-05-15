@@ -13,11 +13,11 @@ public class GameTimer extends TimerTask {
 
     @Override
     public void run() {
-        label.setText("Time left: " + timeLeft + " Score: " + Food.countValue());
+        label.setText("Time left: " + timeLeft + " Score: " + Robot.countValue());
         timeLeft--;
         if (timeLeft < 0) {
             cancel();
-            label.setText("Time's over. Final Score: " + Food.countValue());
+            label.setText("Time's over. Final Score: " + Robot.countValue());
         }
     }
     public void increaseTimeLeft(int increment) {

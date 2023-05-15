@@ -1,8 +1,17 @@
 package urfu.model;
 
+import utils.constant.RobotConstants;
+
 public class Robot {
+    private static GameTimer gameTimer;
+    public static void setGameTimer(GameTimer timer) {
+        gameTimer = timer;
+    }
+
     private double posX = 100;
     private double posY = 100;
+
+    private static int counter = 0;
 
     public static final double maxVelocity = 0.05;
     public static final double maxAngularVelocity = 0.005;
@@ -36,6 +45,14 @@ public class Robot {
         this.robotDirection = robotDirection;
     }
 
+    public static int count() {
+        counter++;
+        gameTimer.increaseTimeLeft(5);
+        return counter;
+    }
+
+    public static int countValue() {return counter; }
+
     private static double distance(double x1, double y1, double x2, double y2) {
         double diffX = x1 - x2;
         double diffY = y1 - y2;
@@ -49,19 +66,19 @@ public class Robot {
     }
 
     public boolean isCloseEnoughToFood(Food food) {
-        return isCloseEnough(this.distanceToFood, 10.0);
+        return isCloseEnough(this.distanceToFood, RobotConstants.foodSize);
     }
 
     public void ifCloseEnoughToFood(Food food) {
         if (isCloseEnoughToFood(food)) {
             food.setPositionX();
             food.setPositionY();
-            Food.count();
+            Robot.count();
         }
     }
 
     public boolean isCloseEnoughToTarget() {
-        return isCloseEnough(this.distanceToTarget, 4.0);
+        return isCloseEnough(this.distanceToTarget, RobotConstants.targetSize);
     }
 
     private boolean isCloseEnough(double distance, double threshold) {

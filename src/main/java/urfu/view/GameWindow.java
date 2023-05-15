@@ -1,6 +1,6 @@
 package urfu.view;
 
-import urfu.model.Food;
+import urfu.model.Robot;
 import urfu.model.GameTimer;
 
 import javax.swing.*;
@@ -22,7 +22,7 @@ public class GameWindow extends JInternalFrame {
         GameTimer gameTimer = new GameTimer(label, 20);
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(gameTimer, 0, 1000);
-        Food.setGameTimer(gameTimer);
+        Robot.setGameTimer(gameTimer);
 
         add(label, BorderLayout.NORTH);
         getContentPane().add(panel);

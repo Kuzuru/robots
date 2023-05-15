@@ -2,8 +2,8 @@ package urfu.model;
 
 public class Target
 {
-    private volatile int x;
-    private volatile int y;
+    private int x;
+    private int y;
 
     public Target()
     {
